@@ -80,6 +80,32 @@ function setupConverterEvents() {
 }
 
 // ============================================
+// Length Conversion Factors (to meters)
+// ============================================
+
+const lengthConversionFactors = {
+    'millimeter': 0.001,
+    'centimeter': 0.01,
+    'meter': 1,
+    'kilometer': 1000,
+    'inch': 0.0254,
+    'foot': 0.3048,
+    'yard': 0.9144,
+    'mile': 1609.34
+};
+
+const unitDisplayNames = {
+    'millimeter': 'mm',
+    'centimeter': 'cm',
+    'meter': 'm',
+    'kilometer': 'km',
+    'inch': 'in',
+    'foot': 'ft',
+    'yard': 'yd',
+    'mile': 'mi'
+};
+
+// ============================================
 // Handle Conversion
 // ============================================
 
@@ -96,18 +122,30 @@ function handleConversion() {
         return;
     }
     
-    // Placeholder conversion (will be implemented with actual conversion logic)
     const fromUnit = document.getElementById('from-unit').value;
     const toUnit = document.getElementById('to-unit').value;
     
-    // Simple placeholder: just copy the value for now
-    const result = fromValue;
+    // Convert to meters first, then to target unit
+    const valueInMeters = fromValue * lengthConversionFactors[fromUnit];
+    const result = valueInMeters / lengthConversionFactors[toUnit];
+    
+    // Determine decimal places based on result size
+    let decimalPlaces = 4;
+    if (result >= 1000) {
+        decimalPlaces = 2;
+    } else if (result >= 100) {
+        decimalPlaces = 3;
+    }
     
     // Update result field
-    toValue.value = result.toFixed(4);
+    toValue.value = result.toFixed(decimalPlaces);
+    
+    // Get display names
+    const fromDisplay = unitDisplayNames[fromUnit];
+    const toDisplay = unitDisplayNames[toUnit];
     
     // Show result info
-    resultInfo.textContent = `${fromValue} ${fromUnit} = ${result.toFixed(4)} ${toUnit}`;
+    resultInfo.textContent = `${fromValue} ${fromDisplay} = ${result.toFixed(decimalPlaces)} ${toDisplay}`;
     resultInfo.classList.add('success');
     resultInfo.classList.remove('error');
 }
