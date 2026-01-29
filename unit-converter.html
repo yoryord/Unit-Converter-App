@@ -30,7 +30,8 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <section class="converter-section">
+            <!-- Length Converter Section -->
+            <section class="converter-section" id="length-converter" style="display: block;">
                 <h2 id="category-title">Length Converter</h2>
                 
                 <div class="converter-container">
@@ -78,6 +79,39 @@
                 </div>
 
                 <div class="result-info" id="result-info"></div>
+            </section>
+
+            <!-- Temperature Converter Section -->
+            <section class="converter-section" id="temperature-converter" style="display: none;">
+                <h2 id="category-title">Temperature Converter</h2>
+                
+                <div class="converter-container">
+                    <div class="input-group">
+                        <label for="from-value-temp">From:</label>
+                        <input type="number" id="from-value-temp" placeholder="Enter value" value="0">
+                        <select id="from-unit-temp">
+                            <option value="celsius">Celsius (°C)</option>
+                            <option value="fahrenheit">Fahrenheit (°F)</option>
+                            <option value="kelvin">Kelvin (K)</option>
+                        </select>
+                    </div>
+
+                    <div class="convert-button">
+                        <button class="btn-convert-temp">Convert</button>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="to-value-temp">To:</label>
+                        <input type="number" id="to-value-temp" placeholder="Result" readonly>
+                        <select id="to-unit-temp">
+                            <option value="celsius">Celsius (°C)</option>
+                            <option value="fahrenheit" selected>Fahrenheit (°F)</option>
+                            <option value="kelvin">Kelvin (K)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="result-info" id="result-info-temp"></div>
             </section>
         </div>
     </main>

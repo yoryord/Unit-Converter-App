@@ -2,6 +2,9 @@
 // Unit Converter App - JavaScript
 // ============================================
 
+// Current Active Category
+let activeCategory = 'length';
+
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
@@ -45,15 +48,19 @@ function setupNavigation() {
 // ============================================
 
 function updateConverterCategory(category) {
-    const categoryTitle = document.getElementById('category-title');
-    const categoryNames = {
-        'length': 'Length Converter',
-        'weight': 'Weight Converter',
-        'temperature': 'Temperature Converter',
-        'volume': 'Volume Converter'
-    };
+    activeCategory = category;
     
-    categoryTitle.textContent = categoryNames[category] || 'Converter';
+    // Hide all converter sections
+    document.getElementById('length-converter').style.display = 'none';
+    document.getElementById('temperature-converter').style.display = 'none';
+    
+    // Show active converter section
+    if (category === 'length') {
+        document.getElementById('length-converter').style.display = 'block';
+    } else if (category === 'temperature') {
+        document.getElementById('temperature-converter').style.display = 'block';
+    }
+    
     console.log('Category changed to:', category);
 }
 
@@ -62,21 +69,25 @@ function updateConverterCategory(category) {
 // ============================================
 
 function setupConverterEvents() {
-    const convertButton = document.querySelector('.btn-convert');
-    const fromValue = document.getElementById('from-value');
-    const toValue = document.getElementById('to-value');
-    const resultInfo = document.getElementById('result-info');
+    // Length Converter Events
+    const lengthConvertButton = document.querySelector('.btn-convert');
+    const lengthFromValue = document.getElementById('from-value');
     
-    // Convert on button click
-    convertButton.addEventListener('click', handleConversion);
+    lengthConvertButton.addEventListener('click', handleLengthConversion);
+    lengthFromValue.addEventListener('input', handleLengthConversion);
+    lengthFromValue.addEventListener('change', handleLengthConversion);
+    document.getElementById('from-unit').addEventListener('change', handleLengthConversion);
+    document.getElementById('to-unit').addEventListener('change', handleLengthConversion);
     
-    // Convert on input change (real-time conversion)
-    fromValue.addEventListener('input', handleConversion);
-    fromValue.addEventListener('change', handleConversion);
+    // Temperature Converter Events
+    const tempConvertButton = document.querySelector('.btn-convert-temp');
+    const tempFromValue = document.getElementById('from-value-temp');
     
-    // Also convert when units are changed
-    document.getElementById('from-unit').addEventListener('change', handleConversion);
-    document.getElementById('to-unit').addEventListener('change', handleConversion);
+    tempConvertButton.addEventListener('click', handleTemperatureConversion);
+    tempFromValue.addEventListener('input', handleTemperatureConversion);
+    tempFromValue.addEventListener('change', handleTemperatureConversion);
+    document.getElementById('from-unit-temp').addEventListener('change', handleTemperatureConversion);
+    document.getElementById('to-unit-temp').addEventListener('change', handleTemperatureConversion);
 }
 
 // ============================================
@@ -106,10 +117,10 @@ const unitDisplayNames = {
 };
 
 // ============================================
-// Handle Conversion
+// Handle Length Conversion
 // ============================================
 
-function handleConversion() {
+function handleLengthConversion() {
     const fromValue = parseFloat(document.getElementById('from-value').value);
     const toValue = document.getElementById('to-value');
     const resultInfo = document.getElementById('result-info');
@@ -143,6 +154,95 @@ function handleConversion() {
     // Get display names
     const fromDisplay = unitDisplayNames[fromUnit];
     const toDisplay = unitDisplayNames[toUnit];
+    
+    // Show result info
+    resultInfo.textContent = `${fromValue} ${fromDisplay} = ${result.toFixed(decimalPlaces)} ${toDisplay}`;
+    resultInfo.classList.add('success');
+    resultInfo.classList.remove('error');
+}
+
+// ============================================
+// Temperature Conversion Formulas
+// ============================================
+
+const temperatureConversions = {
+    'celsius': {
+        'celsius': (val) => val,
+        'fahrenheit': (val) => (val * 9/5) + 32,
+        'kelvin': (val) => val + 273.15
+    },
+    'fahrenheit': {
+        'celsius': (val) => (val - 32) * 5/9,
+        'fahrenheit': (val) => val,
+        'kelvin': (val) => (val - 32) * 5/9 + 273.15
+    },
+    'kelvin': {
+        'celsius': (val) => val - 273.15,
+        'fahrenheit': (val) => (val - 273.15) * 9/5 + 32,
+        'kelvin': (val) => val
+    }
+};
+
+const temperatureDisplayNames = {
+    'celsius': '°C',
+    'fahrenheit': '°F',
+    'kelvin': 'K'
+};
+
+// ============================================
+// Handle Temperature Conversion
+// ============================================
+
+function handleTemperatureConversion() {
+    const fromValue = parseFloat(document.getElementById('from-value-temp').value);
+    const toValue = document.getElementById('to-value-temp');
+    const resultInfo = document.getElementById('result-info-temp');
+    
+    // Validate input
+    if (isNaN(fromValue) || fromValue === '') {
+        toValue.value = '';
+        resultInfo.textContent = '';
+        resultInfo.classList.remove('success', 'error');
+        return;
+    }
+    
+    const fromUnit = document.getElementById('from-unit-temp').value;
+    const toUnit = document.getElementById('to-unit-temp').value;
+    
+    // Check if Kelvin is the source and value is negative
+    if (fromUnit === 'kelvin' && fromValue < 0) {
+        toValue.value = '';
+        resultInfo.textContent = 'Error: Temperature in Kelvin cannot be negative';
+        resultInfo.classList.add('error');
+        resultInfo.classList.remove('success');
+        return;
+    }
+    
+    // Perform conversion
+    const conversionFunction = temperatureConversions[fromUnit][toUnit];
+    const result = conversionFunction(fromValue);
+    
+    // Check if result temperature is below absolute zero
+    if (toUnit === 'kelvin' && result < 0) {
+        toValue.value = '';
+        resultInfo.textContent = 'Error: Resulting temperature below absolute zero';
+        resultInfo.classList.add('error');
+        resultInfo.classList.remove('success');
+        return;
+    }
+    
+    // Determine decimal places
+    let decimalPlaces = 2;
+    if (Math.abs(result) < 1) {
+        decimalPlaces = 4;
+    }
+    
+    // Update result field
+    toValue.value = result.toFixed(decimalPlaces);
+    
+    // Get display names
+    const fromDisplay = temperatureDisplayNames[fromUnit];
+    const toDisplay = temperatureDisplayNames[toUnit];
     
     // Show result info
     resultInfo.textContent = `${fromValue} ${fromDisplay} = ${result.toFixed(decimalPlaces)} ${toDisplay}`;
