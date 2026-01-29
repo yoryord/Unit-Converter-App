@@ -32,7 +32,6 @@ function initializeApp() {
 async function fetchExchangeRates() {
     try {
         // Using open.er-api.com API (free, no API key required)
-        // This API returns rates for all currencies based on a base currency
         const response = await fetch('https://open.er-api.com/v6/latest/USD');
         
         if (!response.ok) {
@@ -45,11 +44,11 @@ async function fetchExchangeRates() {
             throw new Error('API returned error');
         }
         
-        // Update exchange rates with real-time data
+        // Extract only the needed currency rates (USD, EUR, GBP)
         exchangeRates = {
             'usd': 1.0,
-            'eur': data.rates.EUR,
-            'gbp': data.rates.GBP
+            'eur': data.rates.EUR || exchangeRates.eur,
+            'gbp': data.rates.GBP || exchangeRates.gbp
         };
         
         ratesLastUpdated = new Date().toLocaleString();
@@ -60,7 +59,7 @@ async function fetchExchangeRates() {
     } catch (error) {
         console.error('Error fetching exchange rates:', error);
         console.log('Using fallback exchange rates');
-        // Fallback rates are already set in the global variable
+        // Fallback rates remain unchanged
     }
     
     // Refresh rates every 6 hours (21600000 milliseconds)
