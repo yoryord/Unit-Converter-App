@@ -21,6 +21,7 @@
             <ul class="nav-list">
                 <li><a href="#" class="nav-link active" data-category="length">Length</a></li>
                 <li><a href="#" class="nav-link" data-category="temperature">Temperature</a></li>
+                <li><a href="#" class="nav-link" data-category="currency">Currency</a></li>
             </ul>
         </div>
     </nav>
@@ -110,6 +111,39 @@
                 </div>
 
                 <div class="result-info" id="result-info-temp"></div>
+            </section>
+
+            <!-- Currency Converter Section -->
+            <section class="converter-section" id="currency-converter" style="display: none;">
+                <h2 id="category-title">Currency Converter</h2>
+                
+                <div class="converter-container">
+                    <div class="input-group">
+                        <label for="from-value-curr">From:</label>
+                        <input type="number" id="from-value-curr" placeholder="Enter amount" value="0">
+                        <select id="from-unit-curr">
+                            <option value="usd">US Dollar (USD)</option>
+                            <option value="eur">Euro (EUR)</option>
+                            <option value="gbp">British Pound (GBP)</option>
+                        </select>
+                    </div>
+
+                    <div class="convert-button">
+                        <button class="btn-convert-curr">Convert</button>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="to-value-curr">To:</label>
+                        <input type="number" id="to-value-curr" placeholder="Result" readonly>
+                        <select id="to-unit-curr">
+                            <option value="usd">US Dollar (USD)</option>
+                            <option value="eur" selected>Euro (EUR)</option>
+                            <option value="gbp">British Pound (GBP)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="result-info" id="result-info-curr"></div>
             </section>
         </div>
     </main>

@@ -53,12 +53,15 @@ function updateConverterCategory(category) {
     // Hide all converter sections
     document.getElementById('length-converter').style.display = 'none';
     document.getElementById('temperature-converter').style.display = 'none';
+    document.getElementById('currency-converter').style.display = 'none';
     
     // Show active converter section
     if (category === 'length') {
         document.getElementById('length-converter').style.display = 'block';
     } else if (category === 'temperature') {
         document.getElementById('temperature-converter').style.display = 'block';
+    } else if (category === 'currency') {
+        document.getElementById('currency-converter').style.display = 'block';
     }
     
     console.log('Category changed to:', category);
@@ -88,6 +91,16 @@ function setupConverterEvents() {
     tempFromValue.addEventListener('change', handleTemperatureConversion);
     document.getElementById('from-unit-temp').addEventListener('change', handleTemperatureConversion);
     document.getElementById('to-unit-temp').addEventListener('change', handleTemperatureConversion);
+    
+    // Currency Converter Events
+    const currConvertButton = document.querySelector('.btn-convert-curr');
+    const currFromValue = document.getElementById('from-value-curr');
+    
+    currConvertButton.addEventListener('click', handleCurrencyConversion);
+    currFromValue.addEventListener('input', handleCurrencyConversion);
+    currFromValue.addEventListener('change', handleCurrencyConversion);
+    document.getElementById('from-unit-curr').addEventListener('change', handleCurrencyConversion);
+    document.getElementById('to-unit-curr').addEventListener('change', handleCurrencyConversion);
 }
 
 // ============================================
@@ -293,3 +306,71 @@ Temperature formulas:
 - Celsius to Kelvin: C + 273.15
 - Kelvin to Celsius: K - 273.15
 */
+
+// ============================================
+// Currency Exchange Rates
+// (Base rates as of 2026 - Update with actual API or real rates)
+// ============================================
+
+const currencyRates = {
+    'usd': 1.0,           // USD is the base currency
+    'eur': 0.92,          // 1 USD = 0.92 EUR
+    'gbp': 0.79           // 1 USD = 0.79 GBP
+};
+
+const currencyDisplayNames = {
+    'usd': '$',
+    'eur': '€',
+    'gbp': '£'
+};
+
+// ============================================
+// Handle Currency Conversion
+// ============================================
+
+function handleCurrencyConversion() {
+    const fromValue = parseFloat(document.getElementById('from-value-curr').value);
+    const toValue = document.getElementById('to-value-curr');
+    const resultInfo = document.getElementById('result-info-curr');
+    
+    // Validate input
+    if (isNaN(fromValue) || fromValue === '') {
+        toValue.value = '';
+        resultInfo.textContent = '';
+        resultInfo.classList.remove('success', 'error');
+        return;
+    }
+    
+    // Check if amount is negative
+    if (fromValue < 0) {
+        toValue.value = '';
+        resultInfo.textContent = 'Error: Amount cannot be negative';
+        resultInfo.classList.add('error');
+        resultInfo.classList.remove('success');
+        return;
+    }
+    
+    const fromUnit = document.getElementById('from-unit-curr').value;
+    const toUnit = document.getElementById('to-unit-curr').value;
+    
+    // Convert to USD first, then to target currency
+    const valueInUSD = fromValue / currencyRates[fromUnit];
+    const result = valueInUSD * currencyRates[toUnit];
+    
+    // Determine decimal places
+    let decimalPlaces = 2;
+    
+    // Update result field
+    toValue.value = result.toFixed(decimalPlaces);
+    
+    // Get currency codes and symbols
+    const fromCode = fromUnit.toUpperCase();
+    const toCode = toUnit.toUpperCase();
+    const fromSymbol = currencyDisplayNames[fromUnit];
+    const toSymbol = currencyDisplayNames[toUnit];
+    
+    // Show result info
+    resultInfo.textContent = `${fromSymbol}${fromValue} ${fromCode} = ${toSymbol}${result.toFixed(decimalPlaces)} ${toCode}`;
+    resultInfo.classList.add('success');
+    resultInfo.classList.remove('error');
+}
