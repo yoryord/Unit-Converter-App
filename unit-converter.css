@@ -1,0 +1,345 @@
+/* ============================================
+   General Styles & Variables
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #007bff;
+    --primary-hover: #0056b3;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --background-color: #f8f9fa;
+    --text-color: #333;
+    --border-color: #dee2e6;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --spacing-unit: 1rem;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    line-height: 1.6;
+}
+
+/* ============================================
+   Container & Layout
+   ============================================ */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-unit);
+}
+
+/* ============================================
+   Header Styles
+   ============================================ */
+
+.header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    color: white;
+    padding: 3rem var(--spacing-unit);
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.header .container {
+    padding: 0 var(--spacing-unit);
+}
+
+.logo {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.tagline {
+    font-size: 1.1rem;
+    opacity: 0.95;
+    font-weight: 300;
+}
+
+/* ============================================
+   Navigation Styles
+   ============================================ */
+
+.navbar {
+    background-color: white;
+    border-bottom: 2px solid var(--border-color);
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0;
+}
+
+.nav-link {
+    display: block;
+    padding: 1rem 1.5rem;
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.nav-link.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+/* ============================================
+   Main Content & Converter Section
+   ============================================ */
+
+.main-content {
+    padding: 3rem var(--spacing-unit);
+    min-height: calc(100vh - 400px);
+}
+
+.converter-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#category-title {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.converter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+
+/* ============================================
+   Input Group & Form Styles
+   ============================================ */
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 300px;
+}
+
+.input-group label {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+.input-group input,
+.input-group select {
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    font-family: inherit;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.input-group input[readonly] {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   Button Styles
+   ============================================ */
+
+.convert-button {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-convert {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+    min-width: 150px;
+}
+
+.btn-convert:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.btn-convert:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
+}
+
+/* ============================================
+   Result Info Styles
+   ============================================ */
+
+.result-info {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--background-color);
+    border-radius: 6px;
+    border-left: 4px solid var(--primary-color);
+    text-align: center;
+    min-height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary-color);
+}
+
+.result-info.success {
+    background-color: #d4edda;
+    border-left-color: var(--success-color);
+    color: #155724;
+}
+
+.result-info.error {
+    background-color: #f8d7da;
+    border-left-color: var(--danger-color);
+    color: #721c24;
+}
+
+/* ============================================
+   Footer Styles
+   ============================================ */
+
+.footer {
+    background-color: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 2rem var(--spacing-unit);
+    margin-top: 3rem;
+}
+
+.footer p {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+}
+
+.footer p:first-child {
+    font-weight: 600;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 768px) {
+    .logo {
+        font-size: 2rem;
+    }
+
+    .tagline {
+        font-size: 0.95rem;
+    }
+
+    .nav-list {
+        gap: 0;
+    }
+
+    .nav-link {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .converter-section {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    #category-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .converter-container {
+        gap: 1.5rem;
+    }
+
+    .input-group {
+        max-width: 100%;
+    }
+
+    .btn-convert {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .main-content {
+        min-height: calc(100vh - 300px);
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 2rem var(--spacing-unit);
+    }
+
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    .nav-link {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    #category-title {
+        font-size: 1.3rem;
+    }
+
+    .converter-section {
+        padding: 1rem;
+        margin: 0.5rem;
+    }
+}
