@@ -5,18 +5,66 @@
 // Current Active Category
 let activeCategory = 'length';
 
+// Global exchange rates object
+let exchangeRates = {
+    'usd': 1.0,
+    'eur': 0.92,
+    'gbp': 0.79
+};
+
+let ratesLastUpdated = null;
+
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
+    fetchExchangeRates();
 });
-
-// ============================================
-// Initialize App
-// ============================================
 
 function initializeApp() {
     setupNavigation();
     setupConverterEvents();
+}
+
+// ============================================
+// Fetch Exchange Rates from API
+// ============================================
+
+async function fetchExchangeRates() {
+    try {
+        // Using open.er-api.com API (free, no API key required)
+        // This API returns rates for all currencies based on a base currency
+        const response = await fetch('https://open.er-api.com/v6/latest/USD');
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch exchange rates');
+        }
+        
+        const data = await response.json();
+        
+        if (data.result !== 'success') {
+            throw new Error('API returned error');
+        }
+        
+        // Update exchange rates with real-time data
+        exchangeRates = {
+            'usd': 1.0,
+            'eur': data.rates.EUR,
+            'gbp': data.rates.GBP
+        };
+        
+        ratesLastUpdated = new Date().toLocaleString();
+        
+        console.log('Exchange rates updated successfully:', exchangeRates);
+        console.log('Last updated:', ratesLastUpdated);
+        
+    } catch (error) {
+        console.error('Error fetching exchange rates:', error);
+        console.log('Using fallback exchange rates');
+        // Fallback rates are already set in the global variable
+    }
+    
+    // Refresh rates every 6 hours (21600000 milliseconds)
+    setTimeout(fetchExchangeRates, 21600000);
 }
 
 // ============================================
@@ -309,14 +357,11 @@ Temperature formulas:
 
 // ============================================
 // Currency Exchange Rates
-// (Base rates as of 2026 - Update with actual API or real rates)
+// (Fetched from API at runtime - fallback rates below)
 // ============================================
 
-const currencyRates = {
-    'usd': 1.0,           // USD is the base currency
-    'eur': 0.92,          // 1 USD = 0.92 EUR
-    'gbp': 0.79           // 1 USD = 0.79 GBP
-};
+// Exchange rates are now fetched from API in fetchExchangeRates()
+// This is just for reference - actual rates are stored in global 'exchangeRates' variable
 
 const currencyDisplayNames = {
     'usd': '$',
@@ -354,8 +399,8 @@ function handleCurrencyConversion() {
     const toUnit = document.getElementById('to-unit-curr').value;
     
     // Convert to USD first, then to target currency
-    const valueInUSD = fromValue / currencyRates[fromUnit];
-    const result = valueInUSD * currencyRates[toUnit];
+    const valueInUSD = fromValue / exchangeRates[fromUnit];
+    const result = valueInUSD * exchangeRates[toUnit];
     
     // Determine decimal places
     let decimalPlaces = 2;
@@ -369,8 +414,13 @@ function handleCurrencyConversion() {
     const fromSymbol = currencyDisplayNames[fromUnit];
     const toSymbol = currencyDisplayNames[toUnit];
     
-    // Show result info
-    resultInfo.textContent = `${fromSymbol}${fromValue} ${fromCode} = ${toSymbol}${result.toFixed(decimalPlaces)} ${toCode}`;
+    // Show result info with last update time if available
+    let resultText = `${fromSymbol}${fromValue} ${fromCode} = ${toSymbol}${result.toFixed(decimalPlaces)} ${toCode}`;
+    if (ratesLastUpdated) {
+        resultText += ` (Updated: ${ratesLastUpdated})`;
+    }
+    
+    resultInfo.textContent = resultText;
     resultInfo.classList.add('success');
     resultInfo.classList.remove('error');
 }
